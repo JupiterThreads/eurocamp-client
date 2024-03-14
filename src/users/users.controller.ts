@@ -55,7 +55,7 @@ export class UsersController {
     status: HttpStatus.NO_CONTENT,
     description: 'User has been successfully deleted',
   })
-  async deleteUser(@Param('id') id: string): Promise<void> {
-    await this.usersService.deleteUser(id);
+  async removeUser(@Param('id') id: string): Promise<void> {
+    await this.usersService.removeUser(id);
   }
 }

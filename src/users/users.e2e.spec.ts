@@ -33,13 +33,13 @@ const newUser = {
   email: 'j.holden@ceres.com',
 };
 
-describe('Users success', () => {
+describe('Users', () => {
   let app: INestApplication;
   const usersService = {
     getUsers: async () => users,
     getUser: async () => users[0],
     createUser: async () => newUser,
-    deleteUser: async () => {},
+    removeUser: async () => {},
   };
 
   beforeAll(async () => {

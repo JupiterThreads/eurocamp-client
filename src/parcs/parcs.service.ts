@@ -1,18 +1,20 @@
 import { Injectable, Logger, HttpException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { catchError, firstValueFrom } from 'rxjs';
-import { User } from './interfaces/user.interface';
+
+import { CreateParcDto } from './dto/create-parc.dto';
+import { Parc } from './interfaces/parc.interface';
 import { AxiosError } from 'axios';
-import { CreateUserDto } from './dto/create-user.dto';
+import { catchError, firstValueFrom } from 'rxjs';
 
 @Injectable()
-export class UsersService {
-  private readonly logger = new Logger(UsersService.name);
+export class ParcsService {
+  private readonly logger = new Logger(ParcsService.name);
+
   constructor(private readonly httpService: HttpService) {}
 
-  async getUsers(): Promise<User[]> {
+  async create(createParcDto: CreateParcDto) {
     const { data } = await firstValueFrom(
-      this.httpService.get<User[]>('/users').pipe(
+      this.httpService.post<Parc>('/parcs', createParcDto).pipe(
         catchError((error: AxiosError) => {
           this.logger.error(error.response.data);
           const { message, statusCode } = error.response.data as Record<
@@ -26,9 +28,9 @@ export class UsersService {
     return data;
   }
 
-  async getUser(id: string): Promise<User> {
+  async findAll(): Promise<Parc[]> {
     const { data } = await firstValueFrom(
-      this.httpService.get<User>(`/users/${id}`).pipe(
+      this.httpService.get<Parc[]>('/parcs').pipe(
         catchError((error: AxiosError) => {
           this.logger.error(error.response.data);
           const { message, statusCode } = error.response.data as Record<
@@ -42,9 +44,9 @@ export class UsersService {
     return data;
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
+  async findOne(id: string): Promise<Parc> {
     const { data } = await firstValueFrom(
-      this.httpService.post<User>('/users', createUserDto).pipe(
+      this.httpService.get<Parc>(`/parcs/${id}`).pipe(
         catchError((error: AxiosError) => {
           this.logger.error(error.response.data);
           const { message, statusCode } = error.response.data as Record<
@@ -58,9 +60,9 @@ export class UsersService {
     return data;
   }
 
-  async removeUser(id: string): Promise<void> {
+  async remove(id: string): Promise<void> {
     await firstValueFrom(
-      this.httpService.delete<void>(`/users/${id}`).pipe(
+      this.httpService.delete<void>(`/parcs/${id}`).pipe(
         catchError((error: AxiosError) => {
           this.logger.error(error.response.data);
           const { message, statusCode } = error.response.data as Record<
