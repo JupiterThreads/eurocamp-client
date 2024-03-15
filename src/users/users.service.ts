@@ -1,75 +1,29 @@
-import { Injectable, Logger, HttpException } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
-import { catchError, firstValueFrom } from 'rxjs';
+import { Injectable, Logger } from '@nestjs/common';
 import { User } from './interfaces/user.interface';
-import { AxiosError } from 'axios';
 import { CreateUserDto } from './dto/create-user.dto';
+import { BaseHttpService } from '@/base-http.service';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
-export class UsersService {
-  private readonly logger = new Logger(UsersService.name);
-  constructor(private readonly httpService: HttpService) {}
+export class UsersService extends BaseHttpService {
+  constructor(httpService: HttpService) {
+    const logger = new Logger(UsersService.name);
+    super(httpService, logger);
+  }
 
   async getUsers(): Promise<User[]> {
-    const { data } = await firstValueFrom(
-      this.httpService.get<User[]>('/users').pipe(
-        catchError((error: AxiosError) => {
-          this.logger.error(error.response.data);
-          const { message, statusCode } = error.response.data as Record<
-            string,
-            any
-          >;
-          throw new HttpException(message, statusCode);
-        }),
-      ),
-    );
-    return data;
+    return this.httpGet<User[]>('/users');
   }
 
   async getUser(id: string): Promise<User> {
-    const { data } = await firstValueFrom(
-      this.httpService.get<User>(`/users/${id}`).pipe(
-        catchError((error: AxiosError) => {
-          this.logger.error(error.response.data);
-          const { message, statusCode } = error.response.data as Record<
-            string,
-            any
-          >;
-          throw new HttpException(message, statusCode);
-        }),
-      ),
-    );
-    return data;
+    return this.httpGet<User>(`/users/${id}`);
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const { data } = await firstValueFrom(
-      this.httpService.post<User>('/users', createUserDto).pipe(
-        catchError((error: AxiosError) => {
-          this.logger.error(error.response.data);
-          const { message, statusCode } = error.response.data as Record<
-            string,
-            any
-          >;
-          throw new HttpException(message, statusCode);
-        }),
-      ),
-    );
-    return data;
+    return this.httpPost<User>('/users', createUserDto);
   }
 
   async removeUser(id: string): Promise<void> {
-    await firstValueFrom(
-      this.httpService.delete<void>(`/users/${id}`).pipe(
-        catchError((error: AxiosError) => {
-          this.logger.error(error.response.data);
-          const { message, statusCode } = error.response.data as Record<
-            string,
-            any
-          >;
-          throw new HttpException(message, statusCode);
-        }),
-      ),
-    );
+    await this.httpDelete(`/users/${id}`);
   }
 }

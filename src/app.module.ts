@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from './users/users.module';
-import { BookingsModule } from './bookings/bookings.module';
-import { ParcsModule } from './parcs/parcs.module';
-import { UsersService } from 'src/users/users.service';
-import { UsersController } from 'src/users/users.controller';
+import { UsersModule } from '@/users/users.module';
+import { BookingsModule } from '@/bookings/bookings.module';
+import { ParcsModule } from '@/parcs/parcs.module';
+import { UsersService } from '@/users/users.service';
+import { UsersController } from '@/users/users.controller';
 import { HttpModule } from '@nestjs/axios';
-import { HttpConfigService } from './http-config.service';
+import { HttpConfigService } from '@/http-config.service';
 
 @Module({
   imports: [

@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ParcsService } from './parcs.service';
-import { ParcsController } from './parcs.controller';
+import { ParcsService } from '@/parcs/parcs.service';
+import { ParcsController } from '@/parcs/parcs.controller';
 import { HttpModule } from '@nestjs/axios';
 import { APP_FILTER } from '@nestjs/core';
-import { HttpExceptionFilter } from '../http-exception.filters';
-import { HttpConfigService } from '../http-config.service';
+import { HttpExceptionFilter } from '@/http-exception.filters';
+import { HttpConfigService } from '@/http-config.service';
 
 @Module({
   imports: [

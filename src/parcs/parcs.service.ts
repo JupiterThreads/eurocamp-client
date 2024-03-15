@@ -1,77 +1,30 @@
-import { Injectable, Logger, HttpException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 
-import { CreateParcDto } from './dto/create-parc.dto';
-import { Parc } from './interfaces/parc.interface';
-import { AxiosError } from 'axios';
-import { catchError, firstValueFrom } from 'rxjs';
+import { CreateParcDto } from '@/parcs/dto/create-parc.dto';
+import { Parc } from '@/parcs/interfaces/parc.interface';
+import { BaseHttpService } from '@/base-http.service';
 
 @Injectable()
-export class ParcsService {
-  private readonly logger = new Logger(ParcsService.name);
-
-  constructor(private readonly httpService: HttpService) {}
+export class ParcsService extends BaseHttpService {
+  constructor(httpService: HttpService) {
+    const logger = new Logger(ParcsService.name);
+    super(httpService, logger);
+  }
 
   async create(createParcDto: CreateParcDto) {
-    const { data } = await firstValueFrom(
-      this.httpService.post<Parc>('/parcs', createParcDto).pipe(
-        catchError((error: AxiosError) => {
-          this.logger.error(error.response.data);
-          const { message, statusCode } = error.response.data as Record<
-            string,
-            any
-          >;
-          throw new HttpException(message, statusCode);
-        }),
-      ),
-    );
-    return data;
+    return this.httpPost<Parc>('/parcs', createParcDto);
   }
 
   async findAll(): Promise<Parc[]> {
-    const { data } = await firstValueFrom(
-      this.httpService.get<Parc[]>('/parcs').pipe(
-        catchError((error: AxiosError) => {
-          this.logger.error(error.response.data);
-          const { message, statusCode } = error.response.data as Record<
-            string,
-            any
-          >;
-          throw new HttpException(message, statusCode);
-        }),
-      ),
-    );
-    return data;
+    return this.httpGet<Parc[]>('/parcs');
   }
 
   async findOne(id: string): Promise<Parc> {
-    const { data } = await firstValueFrom(
-      this.httpService.get<Parc>(`/parcs/${id}`).pipe(
-        catchError((error: AxiosError) => {
-          this.logger.error(error.response.data);
-          const { message, statusCode } = error.response.data as Record<
-            string,
-            any
-          >;
-          throw new HttpException(message, statusCode);
-        }),
-      ),
-    );
-    return data;
+    return this.httpGet<Parc>(`/parcs/${id}`);
   }
 
   async remove(id: string): Promise<void> {
-    await firstValueFrom(
-      this.httpService.delete<void>(`/parcs/${id}`).pipe(
-        catchError((error: AxiosError) => {
-          this.logger.error(error.response.data);
-          const { message, statusCode } = error.response.data as Record<
-            string,
-            any
-          >;
-          throw new HttpException(message, statusCode);
-        }),
-      ),
-    );
+    await this.httpDelete(`/parcs/${id}`);
   }
 }

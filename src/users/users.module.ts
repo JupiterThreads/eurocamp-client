@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { UsersController } from './users.controller';
-import { UsersService } from './users.service';
+import { UsersController } from '@/users/users.controller';
+import { UsersService } from '@/users/users.service';
 import { HttpModule } from '@nestjs/axios';
 import { APP_FILTER } from '@nestjs/core';
-import { HttpExceptionFilter } from '../http-exception.filters';
+import { HttpExceptionFilter } from '@/http-exception.filters';
 
 @Module({
   imports: [HttpModule],

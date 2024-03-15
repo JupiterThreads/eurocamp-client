@@ -8,7 +8,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { ParcsService } from './parcs.service';
+import { ParcsService } from '@/parcs/parcs.service';
 import {
   ApiTags,
   ApiInternalServerErrorResponse,
@@ -17,8 +17,8 @@ import {
   ApiResponse,
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
-import { CreateParcDto } from './dto/create-parc.dto';
-import { Parc as ParcContract } from './parc-contract.dto';
+import { CreateParcDto } from '@/parcs/dto/create-parc.dto';
+import { Parc as ParcContract } from '@/parcs/parc-contract.dto';
 
 @ApiTags('parcs')
 @Controller('parcs')

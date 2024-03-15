@@ -16,9 +16,9 @@ import {
   ApiCreatedResponse,
   ApiResponse,
 } from '@nestjs/swagger';
-import { UsersService } from './users.service';
-import { User as UserContract } from './user-contract.dto';
-import { CreateUserDto } from './dto/create-user.dto';
+import { UsersService } from '@/users/users.service';
+import { User as UserContract } from '@/users/user-contract.dto';
+import { CreateUserDto } from '@/users/dto/create-user.dto';
 
 @ApiTags('users')
 @ApiInternalServerErrorResponse({

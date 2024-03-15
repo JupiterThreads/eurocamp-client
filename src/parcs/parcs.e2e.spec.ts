@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ParcsService } from './parcs.service';
-import { Parc } from './interfaces/parc.interface';
+import { ParcsService } from '@/parcs/parcs.service';
+import { Parc } from '@/parcs/interfaces/parc.interface';
 import * as request from 'supertest';
 import { INestApplication, HttpStatus } from '@nestjs/common';
-import { ParcsModule } from './parcs.module';
+import { ParcsModule } from '@/parcs/parcs.module';
+import { mock, mockReset } from 'jest-mock-extended';
 
 const parcs: Parc[] = [
   {
@@ -23,20 +24,9 @@ const parcs: Parc[] = [
   },
 ];
 
-const newParc = {
-  id: '5679',
-  name: 'Pleasure parc',
-  description: 'Furthermore, pleasures, pain, and escape.',
-};
-
 describe('Parcs', () => {
   let app: INestApplication;
-  const parcsService = {
-    findAll: async () => parcs,
-    findOne: async () => parcs[0],
-    remove: async () => {},
-    create: async () => newParc,
-  };
+  const parcsService = mock<ParcsService>();
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
@@ -50,7 +40,16 @@ describe('Parcs', () => {
     await app.init();
   });
 
+  beforeEach(() => {
+    mockReset(parcsService);
+  });
+
+  afterAll(async () => {
+    await app.close();
+  });
+
   it('/GET parcs should return an array of parcs', () => {
+    parcsService.findAll.mockResolvedValue(parcs);
     return request(app.getHttpServer())
       .get('/parcs')
       .expect(HttpStatus.OK)
@@ -58,11 +57,18 @@ describe('Parcs', () => {
   });
 
   it('/GET parc should return a parc', () => {
-    const expectedParc = parcs[0];
+    const parc = {
+      id: '33076',
+      name: 'sunt',
+      description: 'Incidunt est dolorum et iusto deserunt rem.',
+    };
+
+    parcsService.findOne.mockResolvedValue(parc);
+
     return request(app.getHttpServer())
-      .get(`/parcs/${expectedParc.id}`)
+      .get(`/parcs/${parc.id}`)
       .expect(HttpStatus.OK)
-      .expect(expectedParc);
+      .expect(parc);
   });
 
   it('/POST create parc', () => {
@@ -70,6 +76,10 @@ describe('Parcs', () => {
       name: 'Pleasure parc',
       description: 'Furthermore, pleasures, pain, and escape.',
     };
+
+    const newParc = { ...createParc, id: '5679' };
+
+    parcsService.create.mockResolvedValue(newParc);
 
     return request(app.getHttpServer())
       .post('/parcs')
@@ -79,12 +89,16 @@ describe('Parcs', () => {
   });
 
   it('/DELETE parc', () => {
-    return request(app.getHttpServer())
-      .delete(`/parcs/${parcs[0].id}`)
-      .expect(HttpStatus.NO_CONTENT);
-  });
+    const parc = {
+      id: '33076',
+      name: 'sunt',
+      description: 'Incidunt est dolorum et iusto deserunt rem.',
+    };
 
-  afterAll(async () => {
-    await app.close();
+    parcsService.remove.mockImplementation();
+
+    return request(app.getHttpServer())
+      .delete(`/parcs/${parc.id}`)
+      .expect(HttpStatus.NO_CONTENT);
   });
 });
