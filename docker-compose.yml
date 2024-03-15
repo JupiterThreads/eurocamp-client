@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+  app:
+    build:
+      dockerfile: Dockerfile.dev
+    restart: always
+    depends_on:
+      - redis
+    volumes:
+      - .:/usr/src/app/
+    ports:
+      - "3000:3000"
+    environment:
+      - EUROCAMP_URL=http://host.docker.internal:3001/api/1
+      - REDIS_URL=redis://redis:6379/0
