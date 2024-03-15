@@ -10,6 +10,7 @@ export class HttpExceptionFilter {
     let responseMessage = exception.response.message;
     const { error } = exception.response;
 
+    // handle odd errors from the eurocamp api
     if (statusCode === HttpStatus.BAD_GATEWAY) {
       statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
       responseMessage = 'Error accessing Eurocamp service';
