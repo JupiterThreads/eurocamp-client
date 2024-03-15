@@ -16,6 +16,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
+  app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
     .setTitle('Eurocamp client api')

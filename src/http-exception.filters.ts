@@ -7,13 +7,16 @@ export class HttpExceptionFilter {
     const response = ctx.getResponse();
     let statusCode = exception.getStatus();
 
-    let responseMessage = exception.message;
+    let responseMessage = exception.response.message;
+    const { error } = exception.response;
 
     if (statusCode === HttpStatus.BAD_GATEWAY) {
       statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
       responseMessage = 'Error accessing Eurocamp service';
     }
 
-    response.status(statusCode).json({ statusCode, message: responseMessage });
+    response
+      .status(statusCode)
+      .json({ statusCode, message: responseMessage, error });
   }
 }

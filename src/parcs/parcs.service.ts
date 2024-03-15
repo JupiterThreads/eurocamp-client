@@ -12,7 +12,7 @@ export class ParcsService extends BaseHttpService {
     super(httpService, logger);
   }
 
-  async create(createParcDto: CreateParcDto) {
+  async create(createParcDto: CreateParcDto): Promise<Parc> {
     return this.httpPost<Parc>('/parcs', createParcDto);
   }
 
