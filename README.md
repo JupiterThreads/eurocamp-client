@@ -23,6 +23,10 @@ $ docker-compose run --rm app npm test
 
 ```
 
+### Swagger API docs
+
+Navigate to `http://localhost:3000/api`.
+
 ### Note regarding comments field for bookings
 
 Whilst comments appear to be optional in the api, the table field in the database can not be null.

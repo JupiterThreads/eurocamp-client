@@ -1,7 +1,17 @@
-import { Logger, HttpException } from '@nestjs/common';
+import {
+  Logger,
+  HttpException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
+
+type Exception = {
+  message: string;
+  error: string;
+  statusCode: number;
+};
 
 export class BaseHttpService {
   protected logger: Logger;
@@ -15,13 +25,17 @@ export class BaseHttpService {
   async httpGet<T>(url: string): Promise<T> {
     const { data } = await firstValueFrom(
       this.httpService.get<T>(url).pipe(
-        catchError((error: AxiosError) => {
-          this.logger.error(error.response.data);
-          const { message, statusCode } = error.response.data as Record<
-            string,
-            any
-          >;
-          throw new HttpException(message, statusCode);
+        catchError((err: AxiosError) => {
+          this.logger.error(err.response?.data);
+          if (err.response?.data) {
+            const { message, statusCode, error } = err.response
+              .data as Exception;
+            throw new HttpException(message, statusCode, {
+              cause: new Error(),
+              description: error,
+            });
+          }
+          throw new InternalServerErrorException();
         }),
       ),
     );
@@ -31,13 +45,17 @@ export class BaseHttpService {
   async httpPost<T>(url: string, dataIn: any): Promise<T> {
     const { data } = await firstValueFrom(
       this.httpService.post<T>(url, dataIn).pipe(
-        catchError((error: AxiosError) => {
-          this.logger.error(error.response.data);
-          const { message, statusCode } = error.response.data as Record<
-            string,
-            any
-          >;
-          throw new HttpException(message, statusCode);
+        catchError((err: AxiosError) => {
+          this.logger.error(err.response?.data);
+          if (err.response?.data) {
+            const { message, statusCode, error } = err.response
+              .data as Exception;
+            throw new HttpException(message, statusCode, {
+              cause: new Error(),
+              description: error,
+            });
+          }
+          throw new InternalServerErrorException();
         }),
       ),
     );
@@ -47,13 +65,17 @@ export class BaseHttpService {
   async httpDelete(url: string): Promise<void> {
     await firstValueFrom(
       this.httpService.delete<void>(url).pipe(
-        catchError((error: AxiosError) => {
-          this.logger.error(error.response.data);
-          const { message, statusCode } = error.response.data as Record<
-            string,
-            any
-          >;
-          throw new HttpException(message, statusCode);
+        catchError((err: AxiosError) => {
+          this.logger.error(err.response?.data);
+          if (err.response?.data) {
+            const { message, statusCode, error } = err.response
+              .data as Exception;
+            throw new HttpException(message, statusCode, {
+              cause: new Error(),
+              description: error,
+            });
+          }
+          throw new InternalServerErrorException();
         }),
       ),
     );
