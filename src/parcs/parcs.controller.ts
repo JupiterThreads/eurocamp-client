@@ -16,6 +16,7 @@ import {
   ApiCreatedResponse,
   ApiResponse,
   ApiNotFoundResponse,
+  ApiBadRequestResponse,
 } from '@nestjs/swagger';
 import { CreateParcDto } from '@/parcs/dto/create-parc.dto';
 import { Parc as ParcContract } from '@/parcs/parc-contract.dto';
@@ -29,6 +30,7 @@ export class ParcsController {
   constructor(private readonly parcsService: ParcsService) {}
 
   @Post()
+  @ApiBadRequestResponse()
   @ApiCreatedResponse({ type: ParcContract })
   async create(@Body() createParcDto: CreateParcDto): Promise<ParcContract> {
     return this.parcsService.create(createParcDto);

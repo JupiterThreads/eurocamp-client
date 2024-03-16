@@ -4,14 +4,9 @@ import { ParcsController } from '@/parcs/parcs.controller';
 import { HttpModule } from '@nestjs/axios';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from '@/http-exception.filters';
-import { HttpConfigService } from '@/http-config.service';
 
 @Module({
-  imports: [
-    HttpModule.registerAsync({
-      useClass: HttpConfigService,
-    }),
-  ],
+  imports: [HttpModule],
   controllers: [ParcsController],
   providers: [
     ParcsService,

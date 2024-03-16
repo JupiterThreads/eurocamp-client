@@ -15,6 +15,7 @@ import {
   ApiNotFoundResponse,
   ApiCreatedResponse,
   ApiResponse,
+  ApiBadRequestResponse,
 } from '@nestjs/swagger';
 import { UsersService } from '@/users/users.service';
 import { User as UserContract } from '@/users/user-contract.dto';
@@ -42,6 +43,7 @@ export class UsersController {
   }
 
   @Post()
+  @ApiBadRequestResponse()
   @ApiCreatedResponse({ type: UserContract })
   async createUser(
     @Body() createUserDto: CreateUserDto,

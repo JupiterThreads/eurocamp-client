@@ -11,8 +11,10 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { RedisClientOptions } from 'redis';
 import { redisStore } from 'cache-manager-redis-store';
 import { parsedEnv } from '@/env';
-
-const CACHE_TTL = 10 * 1000; // 10 seconds
+import { ParcsService } from '@/parcs/parcs.service';
+import { ParcsController } from '@/parcs/parcs.controller';
+import { BookingsController } from '@/bookings/bookings.controller';
+import { BookingsService } from '@/bookings/bookings.service';
 
 @Module({
   imports: [
@@ -23,16 +25,18 @@ const CACHE_TTL = 10 * 1000; // 10 seconds
     CacheModule.registerAsync<RedisClientOptions>({
       isGlobal: true,
       useFactory: async () => ({
-        ttl: CACHE_TTL,
         store: await redisStore({
           url: parsedEnv.REDIS_URL,
+          ttl: 10,
         }),
       }),
     }),
   ],
-  controllers: [UsersController],
+  controllers: [UsersController, ParcsController, BookingsController],
   providers: [
     UsersService,
+    ParcsService,
+    BookingsService,
     {
       provide: APP_INTERCEPTOR,
       useClass: CacheInterceptor,

@@ -4,14 +4,9 @@ import { BookingsController } from './bookings.controller';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from '@/http-exception.filters';
 import { HttpModule } from '@nestjs/axios';
-import { HttpConfigService } from '@/http-config.service';
 
 @Module({
-  imports: [
-    HttpModule.registerAsync({
-      useClass: HttpConfigService,
-    }),
-  ],
+  imports: [HttpModule],
   controllers: [BookingsController],
   providers: [
     BookingsService,
